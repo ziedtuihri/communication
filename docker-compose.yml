@@ -1,0 +1,10 @@
+version: '2'
+services:
+  nodejs-server:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "3080:3080"
+    container_name: node-api
+

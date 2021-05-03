@@ -1,0 +1,25 @@
+version: '3'
+services:
+  nodejs-server:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3080:3080"
+    container_name: node-api
+    volumes:
+       - ./api:/usr/src/app/api
+       - /usr/src/app/api/node_modules
+    environment:
+      VIRTUAL_HOST: iset.tn
+      VIRTUAL_PORT: 5000
+  angular-ui:
+    build:
+      context: ./app-ui
+      dockerfile: Dockerfile
+    ports:
+      - "4201:4201"
+    container_name: angular-ui
+    volumes:
+       - ./app-ui:/usr/src/app/app-ui
+       - /usr/src/app/app-ui/node_modules
