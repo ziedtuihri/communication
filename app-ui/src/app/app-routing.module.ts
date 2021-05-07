@@ -1,22 +1,41 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {AdminComponent} from './layout/admin/admin.component';
+import { AdminComponent } from './layout/admin/admin.component';
 import {AuthComponent} from './layout/auth/auth.component';
-import { AuthGuard } from "./service/auth.guard";
-import { AuthService } from "./service/auth.service";
+import { AuthGuard } from "./_service/auth.guard";
+
+
+const routes: Routes = [
+  { 
+    path: '',
+    loadChildren: () => import('./pages/dashboard/dashboard-default/dashboard-default.module').then(m => m.DashboardDefaultModule)
+    , canActivate: [ AuthGuard ];
+   },
+  {
+    path: '',
+    component: AuthComponent,
+    children: [
+      {
+        path: 'authentication',
+        loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
+      }
+    ]
+  },
+
+  // otherwise redirect to home
+  { path: '**',  redirectTo: '' }
+];
+/*
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        
-        pathMatch: 'full',
-        
-      },
-       {
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }, {
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard-default/dashboard-default.module').then(m => m.DashboardDefaultModule)
       }, {
@@ -36,24 +55,23 @@ const routes: Routes = [
         loadChildren: () => import('./pages/user/profile/profile.module').then(m => m.ProfileModule)
       }, {
         path: 'simple-page',
-        loadChildren: () => import('./pages/simple-page/simple-page.module').then(m => m.SimplePageModule),
+        loadChildren: () => import('./pages/simple-page/simple-page.module').then(m => m.SimplePageModule)
       }
-    ],
-    
+    ]
   },
+  /*{ path: '**', redirectTo: '' },
   {
     path: '',
     component: AuthComponent,
     children: [
       {
-        path: 'authentication/login',
-        loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-        
+        path: 'authentication',
+        loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule)
       }
     ]
   }
 ];
-
+*/
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

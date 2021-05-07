@@ -6,9 +6,6 @@ import { DashboardDefaultComponent } from './dashboard-default.component';
 import {SharedModule} from '../../../shared/shared.module';
 import {ChartModule} from 'angular2-chartjs';
 
-import { AuthGuard } from "../../../service/auth.guard";
-import { AuthService } from "../../../service/auth.service";
-
 @NgModule({
   imports: [
     CommonModule,
@@ -16,7 +13,6 @@ import { AuthService } from "../../../service/auth.service";
     SharedModule,
     ChartModule
   ],
-  providers: [AuthService, AuthGuard],
   declarations: [DashboardDefaultComponent]
 })
 export class DashboardDefaultModule { }

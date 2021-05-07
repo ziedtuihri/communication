@@ -4,6 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,13 +36,15 @@ export class AuthService {
   
     // Sign-in
     signIn(user: User) {
+      console.log(user.email + "this user is sending ");
       return this.http.post<any>(`${this.endpoint}/auth_event/singin`, user)
         .subscribe((res: any) => {
           localStorage.setItem('access_token_school', res.token)
-          this.getUserProfile(res._id).subscribe((res) => {
-            this.currentUser = res;
-            this.router.navigate(['/user' + res.msg._id]);
-          })
+          this.currentUser = res;
+          this.router.navigate(['/apps/dashboards/analytics']);
+
+          /*this.getUserProfile(res._id).subscribe((res) => {
+          })*/
         })
     }
 
@@ -52,7 +56,7 @@ export class AuthService {
     doLogout() {
       let removeToken = localStorage.removeItem('access_token_school');
       if (removeToken == null) {
-        this.router.navigate(['log-in']);
+        this.router.navigate(['/pages/auth/login-2']);
       }
     }
   
@@ -79,4 +83,5 @@ export class AuthService {
       }
       return throwError(msg);
     }
+
 }

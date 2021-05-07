@@ -32,7 +32,8 @@ const add_file= require('./api/routes/scolarite/AddFile')
 /********************************/
 /**group communication routers***/
 /********************************/
-
+const route_auth_communication = require('./api/routes/communication/auth')
+const route_contact_communication = require('./api/routes/communication/contact')
 
 
 /*********date base connection it will shut down every 5min you need to restart it*************************/
@@ -91,8 +92,8 @@ app.use("/addfile",add_file)
 /************************************/
 /***use group communication routers**/
 /************************************/
-
-
+app.use("/auth", route_auth_communication)
+app.use("/chat", route_contact_communication)
 
 
   //if api not found will return 

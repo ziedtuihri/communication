@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { FuseUtils } from '@fuse/utils';
 
+import { AuthService } from '../../../auth/auth.service';
 @Injectable()
 export class ChatPanelService
 {
     contacts: any[];
     chats: any[];
     user: any;
+    endpoint: string = AuthService.endpoint;
+    headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    user2 = AuthService.currentUser;
 
     /**
      * Constructor
@@ -16,7 +23,8 @@ export class ChatPanelService
      * @param {HttpClient} _httpClient
      */
     constructor(
-        private _httpClient: HttpClient
+        private _httpClient: HttpClient,
+        public router: Router
     )
     {
     }
@@ -37,10 +45,13 @@ export class ChatPanelService
                     this.contacts = contacts;
                     this.user = user;
                     resolve();
+                    console.log("load user :  " + JSON.stringify(this.user) + "\n");
+                    console.log("load contacts :  " + JSON.stringify(this.contacts) + "\n");
                 },
                 reject
             );
         });
+       
     }
 
     /**
@@ -155,12 +166,15 @@ export class ChatPanelService
      *
      * @returns {Promise<any>}
      */
-    getContacts(): Promise<any>
+    getContacts()
     {
         return new Promise((resolve, reject) => {
-            this._httpClient.get('api/chat-panel-contacts')
+            // all contact Fuse 'api/chat-panel-contacts'
+            this._httpClient.post(`${this.endpoint}/chat/contact`, this.user2)
                 .subscribe((response: any) => {
                     resolve(response);
+                    console.log("++++" + response[0])
+
                 }, reject);
         });
     }
@@ -172,10 +186,13 @@ export class ChatPanelService
      */
     getUser(): Promise<any>
     {
+        
         return new Promise((resolve, reject) => {
+            //`${this.endpoint}/`
             this._httpClient.get('api/chat-panel-user')
                 .subscribe((response: any) => {
                     resolve(response[0]);
+                    console.log("----" + response[0])
                 }, reject);
         });
     }

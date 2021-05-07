@@ -13,7 +13,9 @@ export class AuthService {
 
   endpoint: string = 'http://localhost:5010';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
-  currentUser = {};
+  
+    static currentUser = {};
+    static endpoint: string;
 
   constructor(
     private http: HttpClient,
@@ -36,11 +38,14 @@ export class AuthService {
   
     // Sign-in
     signIn(user: User) {
-      console.log(user.email + "this user is sending ");
-      return this.http.post<any>(`${this.endpoint}/auth_event/singin`, user)
+      
+      return this.http.post<any>(`${this.endpoint}/auth/login`, user)
         .subscribe((res: any) => {
           localStorage.setItem('access_token_school', res.token)
-          this.currentUser = res;
+          AuthService.currentUser = res.data;
+          console.log(user.email + "this user is sending " + JSON.stringify(user) + 
+          "\n " + JSON.stringify(AuthService.currentUser)
+          );
           this.router.navigate(['/apps/dashboards/analytics']);
 
           /*this.getUserProfile(res._id).subscribe((res) => {

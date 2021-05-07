@@ -11,9 +11,7 @@ import { AuthComponent } from './layout/auth/auth.component';
 import {SharedModule} from './shared/shared.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import { AuthGuard } from "./service/auth.guard";
-import { AuthService } from "./service/auth.service";
-
+import { AuthGuard } from "./_service/auth.guard";
 
 @NgModule({
   declarations: [
@@ -27,9 +25,12 @@ import { AuthService } from "./service/auth.service";
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule
+    SharedModule,
+    
+   
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
