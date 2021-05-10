@@ -71,6 +71,10 @@ const activeUsers = new Set();
       io.emit('my broadcast', `server: ${msg}`);
     });
 
+    socket.on('my message', (msg) => {
+      console.log('message: ' + msg);
+    });
+
     socket.on("new user", function (data) {
       socket.userId = data;
       activeUsers.add(data);

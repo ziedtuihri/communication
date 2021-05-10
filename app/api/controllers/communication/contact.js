@@ -21,14 +21,7 @@ exports.contact=(req,res)=>{
   
               res.status(res.statusCode).json({
                 message: "done",
-                data:{ 
-                  mood      : result[0].nom,
-                  unread    : result[0].unread,
-                  status    : result[0].status,
-                  avatar    : result[0].avatar,
-                  id_user   : result[0].id_user,
-                  id_contact: result[0].id_contact
-                },
+                data: result,
                 status: res.statusCode,
               });
 
