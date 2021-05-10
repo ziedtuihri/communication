@@ -39,7 +39,7 @@
         <div *ngFor="let contact of contacts"
              class="contacts-list-item"
              [ngClass]="contact.status"
-             [class.active]="contact.id === selectedContact?.id"
+             [class.active]="contact.id_contact === selectedContact?.id_contact"
              (click)="toggleChat(contact)">
 
             <img class="avatar" [src]="contact.avatar"

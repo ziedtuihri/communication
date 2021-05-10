@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { FuseUtils } from '@fuse/utils';
 
+import * as io from 'socket.io-client';
+
 import { AuthService } from '../../../auth/auth.service';
+import { environment } from './envirenment';
 @Injectable()
 export class ChatPanelService
 {
     contacts: any[];
+    contacts2: any[];
     chats: any[];
     user: any;
     endpoint: string = AuthService.endpoint;
     headers = new HttpHeaders().set('Content-Type', 'application/json');
+    private socket;
 
     user2 = AuthService.currentUser;
 
@@ -29,6 +34,27 @@ export class ChatPanelService
     {
     }
 
+    setupSocketConnection() {
+    
+        this.socket = io(environment.SOCKET_ENDPOINT, {
+            withCredentials: true,
+            extraHeaders: {
+              "Access-Control-Allow-Headers": "*",
+              "Access-Control-Request-Method": "*"
+            }
+        });
+
+        this.socket.emit('my message', 'Hello there from Angular.');
+
+        /*
+        this.socket.emit('my message', 'Hello there from Angular.');
+    
+        this.socket.on('my broadcast', (data: string) => {
+          console.log(data);
+        });*/
+      }
+
+
     /**
      * Loader
      *
@@ -39,11 +65,12 @@ export class ChatPanelService
         return new Promise((resolve, reject) => {
             Promise.all([
                 this.getContacts(),
-                this.getUser()
+                this.getUser(),
+                this.getContacts2()
             ]).then(
-                ([contacts, user]) => {
-                    this.contacts = contacts;
+                ([ contacts, user, contacts2]) => {
                     this.user = user;
+                    this.contacts =  contacts2;
                     resolve();
                     console.log("load user :  " + JSON.stringify(this.user) + "\n");
                     console.log("load contacts :  " + JSON.stringify(this.contacts) + "\n");
@@ -77,7 +104,7 @@ export class ChatPanelService
 
                         // Resolve the promise
                         resolve(chat);
-
+                        console.log("****" + JSON.stringify(chat))
                     }, reject);
             }
             // If there is no chat with this user, create one...
@@ -130,7 +157,7 @@ export class ChatPanelService
                     // Post the updated user data to the server
                     this._httpClient.post('api/chat-panel-user/' + this.user.id, this.user)
                         .subscribe(() => {
-
+                            console.log("****" + JSON.stringify(chat))
                             // Resolve the promise
                             resolve();
                         });
@@ -166,14 +193,35 @@ export class ChatPanelService
      *
      * @returns {Promise<any>}
      */
-    getContacts()
+    getContacts(): Promise<any>
     {
         return new Promise((resolve, reject) => {
             // all contact Fuse 'api/chat-panel-contacts'
-            this._httpClient.post(`${this.endpoint}/chat/contact`, this.user2)
+            // `http://localhost:5010/chat/contact`, {id_user: "123456"} response.data
+            this._httpClient.get('api/chat-panel-contacts')
                 .subscribe((response: any) => {
                     resolve(response);
                     console.log("++++" + response[0])
+
+                }, reject);
+        });
+    }
+
+
+    /**
+     * Get contacts
+     *
+     * @returns {Promise<any>}
+     */
+    getContacts2(): Promise<any>
+    {
+        return new Promise((resolve, reject) => {
+            // all contact Fuse 'api/chat-panel-contacts'
+            // `http://localhost:5010/chat/contact`, {id_user: "123456"} response.data
+            this._httpClient.post(`http://localhost:5010/chat/contact`, {id_user: "123456"})
+                .subscribe((response: any) => {
+                    resolve(response.data);
+                    console.log("++++" + JSON.stringify(response.data))
 
                 }, reject);
         });

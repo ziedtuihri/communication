@@ -13,6 +13,7 @@ import { ChatPanelService } from 'app/layout/components/chat-panel/chat-panel.se
     selector     : 'chat-panel',
     templateUrl  : './chat-panel.component.html',
     styleUrls    : ['./chat-panel.component.scss'],
+    providers:[ ChatPanelService ],    
     encapsulation: ViewEncapsulation.None
 })
 export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
@@ -68,11 +69,13 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
     {
         // Load the contacts
         this._chatPanelService.loadContacts().then(() => {
-
             this.contacts = this._chatPanelService.contacts;
             this.user = this._chatPanelService.user;
         });
 
+        // Connection with socket 
+        this._chatPanelService.setupSocketConnection();
+        
         // Subscribe to the foldedChanged observable
         this._fuseSidebarService.getSidebar('chatPanel').foldedChanged
             .pipe(takeUntil(this._unsubscribeAll))
