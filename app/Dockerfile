@@ -1,11 +1,17 @@
-FROM node:10
+FROM node:10 as base
 
-WORKDIR /usr/src/app/api
-
+WORKDIR /src
 COPY package*.json ./
+EXPOSE 5010
 
-RUN npm install
+FROM base as production
+ENV NODE_ENV=production
+RUN npm ci
+COPY . ./
+CMD ["node", "bin/www"]
 
-EXPOSE 3080
-
-CMD ["npm", "run", "dev"]
+FROM base as dev
+ENV NODE_ENV=development
+RUN npm install -g nodemon && npm install
+COPY . ./
+CMD ["nodemon", "bin/www"]

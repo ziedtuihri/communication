@@ -1,10 +1,14 @@
-version: '2'
+version: '3.3'
 services:
-  nodejs-server:
+  web:
     build:
       context: ./app
-      dockerfile: Dockerfile
+    volumes:
+      - .:/app/api
+    command: npm run start
     ports:
-      - "3080:3080"
-    container_name: node-api
-
+      - "5010:5010"
+    container_name: node_js  
+    environment:
+      NODE_ENV: development
+      DEBUG: nodejs-docker-express:*
