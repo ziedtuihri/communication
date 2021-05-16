@@ -40,7 +40,8 @@ services:
       - .:/app/api
     command: npm run start
     depends_on:
-      - mysql-db     
+      - mysql-db  
+    restart: unless-stopped         
     ports:
       - 5010:5010
     container_name: node_js  
@@ -51,6 +52,8 @@ services:
       VIRTUAL_PORT: 4200
       NODE_ENV: development
       DEBUG: nodejs-docker-express:*
+
+
 
 volumes: 
   db-config:
