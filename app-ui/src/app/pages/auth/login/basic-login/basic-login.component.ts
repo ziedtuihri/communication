@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AuthService } from "../../../../service/auth.service";
+
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+
+
 
 @Component({
   selector: 'app-basic-login',
@@ -7,10 +12,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BasicLoginComponent implements OnInit {
 
-  constructor() { }
+  loginForm: FormGroup;
 
-  ngOnInit() {
-    document.querySelector('body').setAttribute('themebg-pattern', 'theme1');
+  constructor( 
+    private _formBuilder: FormBuilder,
+    private authService: AuthService 
+    ) { }
+
+    /**
+     * On init
+     */
+    ngOnInit(): void
+    {
+        this.loginForm = this._formBuilder.group({
+            email   : ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required]
+        });
+    }
+
+    onSubmit(event) {
+      event.preventDefault();
+      if (!this.loginForm.valid) return;
+
+      this.authService.signIn(this.loginForm.value);
+      console.log(this.loginForm.value);
   }
 
 }

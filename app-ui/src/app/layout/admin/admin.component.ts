@@ -1,6 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {animate, AUTO_STYLE, state, style, transition, trigger} from '@angular/animations';
 import {MenuItems} from '../../shared/menu-items/menu-items';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { PopupComponent } from '../../popup/popup.component';
+
+import { AuthService } from '../../service/auth.service'
 
 @Component({
   selector: 'app-admin',
@@ -101,7 +105,7 @@ export class AdminComponent implements OnInit {
 
   public config: any;
 
-  constructor(public menuItems: MenuItems) {
+  constructor(public menuItems: MenuItems, private modalService: NgbModal, private authService:AuthService) {
     this.navType = 'st5';
     this.themeLayout = 'vertical';
     this.vNavigationView = 'view1';
@@ -161,6 +165,10 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     this.setBackgroundPattern('pattern2');
+  }
+
+  logout(){
+    // this.authService.doLogout();
   }
 
   onResize(event) {
@@ -288,5 +296,29 @@ export class AdminComponent implements OnInit {
       this.navBarTheme = 'theme1';
     }
   }
+
+  open() {
+    const modalRef = this.modalService.open(PopupComponent);
+    modalRef.componentInstance.name = 'Hanen';
+  }
+  // open() {
+    // this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    //   this.closeResult = `Closed with: ${result}`;
+    // }, (reason) => {
+    //   this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    // });
+  //   this.modalService.open(PopupComponent, {ariaLabelledBy: 'modal-basic-title'});
+  // }
+
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
+
 
 }

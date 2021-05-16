@@ -1,68 +1,26 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AdminComponent } from './layout/admin/admin.component';
-import {AuthComponent} from './layout/auth/auth.component';
-import { AuthGuard } from "./_service/auth.guard";
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { HomePageComponent } from "./home-page/home-page.component";
+import { AuthGuard } from "./service/auth.guard";
 
+import { AuthComponent } from './layout/auth/auth.component';
 
-const routes: Routes = [
-  { 
-    path: '',
-    loadChildren: () => import('./pages/dashboard/dashboard-default/dashboard-default.module').then(m => m.DashboardDefaultModule)
-    , canActivate: [ AuthGuard ];
-   },
-  {
-    path: '',
-    component: AuthComponent,
-    children: [
-      {
-        path: 'authentication',
-        loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-      }
-    ]
-  },
-
-  // otherwise redirect to home
-  { path: '**',  redirectTo: '' }
-];
-/*
 const routes: Routes = [
   {
     path: '',
-    component: AdminComponent,
+    component: HomePageComponent,
+    canActivate : [ AuthGuard ] ,
+    canActivateChild : [ AuthGuard ],
     children: [
       {
         path: '',
         redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }, {
-        path: 'dashboard',
-        loadChildren: () => import('./pages/dashboard/dashboard-default/dashboard-default.module').then(m => m.DashboardDefaultModule)
-      }, {
-        path: 'basic',
-        loadChildren: () => import('./pages/ui-elements/basic/basic.module').then(m => m.BasicModule)
-      }, {
-        path: 'notifications',
-        loadChildren: () => import('./pages/ui-elements/advance/notifications/notifications.module').then(m => m.NotificationsModule)
-      }, {
-        path: 'bootstrap-table',
-        loadChildren: () => import('./pages/ui-elements/tables/bootstrap-table/basic-bootstrap/basic-bootstrap.module').then(m => m.BasicBootstrapModule),
-      }, {
-        path: 'map',
-        loadChildren: () => import('./pages/map/google-map/google-map.module').then(m => m.GoogleMapModule),
-      }, {
-        path: 'user',
-        loadChildren: () => import('./pages/user/profile/profile.module').then(m => m.ProfileModule)
-      }, {
-        path: 'simple-page',
-        loadChildren: () => import('./pages/simple-page/simple-page.module').then(m => m.SimplePageModule)
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
-  /*{ path: '**', redirectTo: '' },
   {
     path: '',
-    component: AuthComponent,
     children: [
       {
         path: 'authentication',
@@ -71,9 +29,9 @@ const routes: Routes = [
     ]
   }
 ];
-*/
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
