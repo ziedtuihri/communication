@@ -10,10 +10,13 @@ import { PopupComponent } from './popup/popup.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentService } from './service/document.service';
+import { ChatService } from './service/chat.service';
 
 import { AuthGuard } from "./service/auth.guard";
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
+const config: SocketIoConfig = { url: 'http://localhost:5010', options: {} };
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,10 +32,12 @@ import { AuthGuard } from "./service/auth.guard";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    SocketIoModule.forRoot(config)
   ],
   entryComponents: [PopupComponent],
   schemas: [ NO_ERRORS_SCHEMA ],
-  providers: [ DocumentService, AuthGuard ],
+  providers: [ DocumentService, AuthGuard, ChatService ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

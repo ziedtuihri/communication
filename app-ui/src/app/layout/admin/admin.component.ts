@@ -4,7 +4,10 @@ import {MenuItems} from '../../shared/menu-items/menu-items';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { PopupComponent } from '../../popup/popup.component';
 
-import { AuthService } from '../../service/auth.service'
+import { AuthService } from '../../service/auth.service';
+
+
+import { ChatService } from '../../service/chat.service';
 
 @Component({
   selector: 'app-admin',
@@ -104,8 +107,16 @@ export class AdminComponent implements OnInit {
   @ViewChild('searchFriends', /* TODO: add static flag */ {static: false}) search_friends: ElementRef;
 
   public config: any;
+  contacts : any[];
+  public id_user_contact;
+  newMessage: string;
+  messageList:  string[] = [];
 
-  constructor(public menuItems: MenuItems, private modalService: NgbModal, private authService:AuthService) {
+
+  constructor(public menuItems: MenuItems,
+     private modalService: NgbModal, 
+     private authService:AuthService,
+     private _chatService:ChatService) {
     this.navType = 'st5';
     this.themeLayout = 'vertical';
     this.vNavigationView = 'view1';
@@ -165,6 +176,30 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     this.setBackgroundPattern('pattern2');
+    this._chatService.setupSocketConnection();
+    
+    
+    // Load the contacts
+    this._chatService.loadContacts(localStorage.getItem("idUser")).then(() =>{
+      this.contacts = this._chatService.contacts;
+      console.log("contact" + JSON.stringify(this.contacts));
+    })
+
+    this._chatService
+    .getMessages()
+    .subscribe((message: string) => {
+      this.messageList.push(message);
+      console.log("you have new message " + message);
+    });
+
+
+    console.log("//" + JSON.stringify(this._chatService.getContacts(localStorage.getItem("idUser"))));
+
+  }
+
+  sendMessage() {
+    this._chatService.sendMessage(this.newMessage, this.id_user_contact);
+    this.newMessage = '';
   }
 
   logout(){
@@ -228,9 +263,18 @@ export class AdminComponent implements OnInit {
     this.chatInnerToggleInverse = 'off';
   }
 
-  toggleChatInner() {
+  toggleChatInnerBack(){
     this.chatInnerToggle = this.chatInnerToggle === 'off' ? 'on' : 'off';
     this.chatInnerToggleInverse = this.chatInnerToggleInverse === 'off' ? 'on' : 'off';
+  }
+
+  toggleChatInner(id_user_contact) {
+    this.chatInnerToggle = this.chatInnerToggle === 'off' ? 'on' : 'off';
+    this.chatInnerToggleInverse = this.chatInnerToggleInverse === 'off' ? 'on' : 'off';
+
+    // get all messages with id contact and id_suer
+    this.id_user_contact = id_user_contact;
+    console.log("this is " + id_user_contact);
   }
 
   searchFriendList(e: Event) {

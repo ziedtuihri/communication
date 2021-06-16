@@ -38,22 +38,27 @@ services:
       context: ./app
     volumes:
       - .:/app/api
-    command: npm run start
     depends_on:
       - mysql-db  
     restart: unless-stopped         
     ports:
       - 5010:5010
-    container_name: node_js  
-    links:
-      - mysql-db        
+    container_name: nodejs  
+    command: npm run start
     environment:
-      VIRTUAL_HOST: iset.rades
-      VIRTUAL_PORT: 4200
+      DATABASE_HOST: mysql-db
+      MYSQL_PORT: 3306
+      MYSQL_HOST: mysql-db
       NODE_ENV: development
       DEBUG: nodejs-docker-express:*
 
-
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  
 
 volumes: 
   db-config:

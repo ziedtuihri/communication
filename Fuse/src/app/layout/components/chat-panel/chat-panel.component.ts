@@ -67,14 +67,16 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Connection with socket 
+        this._chatPanelService.setupSocketConnection();
+
         // Load the contacts
         this._chatPanelService.loadContacts().then(() => {
             this.contacts = this._chatPanelService.contacts;
             this.user = this._chatPanelService.user;
         });
 
-        // Connection with socket 
-        this._chatPanelService.setupSocketConnection();
+     
         
         // Subscribe to the foldedChanged observable
         this._fuseSidebarService.getSidebar('chatPanel').foldedChanged

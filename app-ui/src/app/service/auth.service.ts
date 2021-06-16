@@ -44,9 +44,10 @@ export class AuthService {
 
             }else{
               localStorage.setItem('access_token_school', res.token)
-              AuthService.currentUser = res.data;
+              localStorage.setItem("idUser", res.data.id_user)
               console.log(user.email + "this user is sending " + JSON.stringify(res) + 
-              "\n " + JSON.stringify(AuthService.currentUser)
+              "\n " + JSON.stringify(AuthService.currentUser) + "\n" +
+              localStorage.getItem("idUser")
               );
               this.router.navigate(['']);
             }

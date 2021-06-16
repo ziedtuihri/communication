@@ -65,26 +65,24 @@ allowEIO3: true
 const activeUsers = new Set();
 
   io.on("connection", function (socket) {
-    console.log("Made socket connection");
-  
-    socket.on('my message', (msg) => {
-      io.emit('my broadcast', `server: ${msg}`);
-    });
+    console.log("A user is connected", socket.id);
+    socket.on('userConnected', socket.join);
+    socket.on('userDisconnected', socket.leave);
+
 
     socket.on('my message', (msg) => {
       console.log('message: ' + msg);
     });
 
-    socket.on("new user", function (data) {
-      socket.userId = data;
-      activeUsers.add(data);
-      io.emit("new user", [...activeUsers]);
+    socket.on("private message", ({ content, to }) => {
+      console.log(to + 'message: tesssttt ' + content);
+      socket.to(to).emit("private message", {
+        content,
+        from: socket.id,
+      });
+      
     });
   
-    socket.on("disconnect", () => {
-      activeUsers.delete(socket.userId);
-      io.emit("user disconnected", socket.userId);
-    });
   });
 
 
